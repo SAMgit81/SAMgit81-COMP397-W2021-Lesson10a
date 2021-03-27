@@ -35,6 +35,9 @@ public class ControlPanelController : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         rectTransform.anchoredPosition = offScreenPosition;
         timer = 0.0f;
+
+        var sceneDataJSONstring = PlayerPrefs.GetString("playerData");
+        JsonUtility.FromJsonOverwrite(sceneDataJSONstring, sceneData);
     }
 
     // Update is called once per frame
@@ -107,8 +110,11 @@ public class ControlPanelController : MonoBehaviour
 
     public void OnLoadButtonPressed()
     {
+        //Desrialize
+       
         player.controller.enabled = false;
         player.transform.position = sceneData.playerPosition;
+        player.transform.rotation = sceneData.playerRotation;
         player.controller.enabled = true;
 
         player.health = sceneData.playerHealth;
@@ -118,6 +124,9 @@ public class ControlPanelController : MonoBehaviour
     public void OnSaveButtonPressed()
     {
         sceneData.playerPosition = player.transform.position;
+        sceneData.playerRotation = player.transform.rotation;
+        //save data to Player db
+        PlayerPrefs.SetString("playerData", JsonUtility.ToJson(sceneData));
         sceneData.playerHealth = player.health;
     }
 }
